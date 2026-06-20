@@ -185,9 +185,20 @@ async def run_scan(request: Request, scan_request: ScanRequest):
 
 @app.get("/api/v1/health")
 async def health_check():
-    """
-    VIVA-PROOF EXPLANATION:
-    A simple health check endpoint. It allows the Docker container or orchestrator
-    to ping the backend to verify that the FastAPI server is running properly.
-    """
     return {"status": "healthy"}
+
+@app.get("/api/v1/debug")
+async def debug():
+    import subprocess
+    try:
+        which = subprocess.run(["which", "nmap"], capture_output=True, text=True, timeout=5)
+        version = subprocess.run(["nmap", "--version"], capture_output=True, text=True, timeout=5)
+        return {
+            "which": which.stdout.strip(),
+            "which_stderr": which.stderr.strip(),
+            "version": version.stdout.strip()[:500],
+            "version_stderr": version.stderr.strip()[:500],
+            "user": subprocess.run(["id"], capture_output=True, text=True, timeout=5).stdout.strip(),
+        }
+    except Exception as e:
+        return {"error": str(e)}
