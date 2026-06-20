@@ -15,10 +15,12 @@ def perform_scan(target: str, scan_type: str = "fast") -> dict:
     # --script-timeout: Stop slow scripts
     if scan_type == "detailed":
         # Deep scan: Uses vulnerability scripts and full version detection
-        nmap_args = "-sV --script vuln -p 1-1000 -T4 --max-retries 1 --script-timeout 2m"
+        # -sT: TCP connect scan (works in containers without CAP_NET_RAW)
+        # -Pn: Skip host discovery (assume host is up, handles no-ICMP environments)
+        nmap_args = "-sT -Pn -sV --script vuln -p 1-1000 -T4 --max-retries 1 --script-timeout 2m"
     else:
         # Fast mode: Only top 100 ports (-F), fast version detection, no vuln scripts for speed
-        nmap_args = "-F -sV --version-light -T4 --max-retries 1"
+        nmap_args = "-sT -Pn -F -sV --version-light -T4 --max-retries 1"
         
     try:
         nm.scan(hosts=target, arguments=nmap_args)
