@@ -190,5 +190,5 @@ async def health_check():
 
 @app.get("/api/v1/debug")
 async def debug():
-    return {"message": "debug endpoint placeholder"}
+    return {"status": "ok"}
 
