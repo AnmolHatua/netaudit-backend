@@ -4,16 +4,16 @@ import re
 
 def perform_scan(target: str, scan_type: str = "fast") -> dict:
     if scan_type == "detailed":
-        args = ["nmap", "-sT", "-Pn", "-sV", "--script", "vuln", "-p", "1-1000", "-T4", "--max-retries", "1", "--script-timeout", "2m"]
+        args = ["nmap", "-sT", "-Pn", "-sV", "-p", "1-1000", "-T4", "--max-retries", "1", "--host-timeout", "150s"]
     else:
         args = ["nmap", "-sT", "-Pn", "-F", "-sV", "--version-light", "-T4", "--max-retries", "1"]
 
     args += ["-oX", "-", target]
 
     try:
-        result = subprocess.run(args, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(args, capture_output=True, text=True, timeout=180)
     except subprocess.TimeoutExpired:
-        raise Exception("Nmap scan timed out after 120 seconds")
+        raise Exception("Nmap scan timed out after 180 seconds")
 
     if result.returncode != 0:
         raise Exception(f"Nmap failed (code {result.returncode}): {result.stderr[:500]}")
