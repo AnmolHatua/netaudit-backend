@@ -187,24 +187,8 @@ async def run_scan(request: Request, scan_request: ScanRequest):
 async def health_check():
     return {"status": "healthy"}
 
+
 @app.get("/api/v1/debug")
 async def debug():
-    import subprocess
-    try:
-        which = subprocess.run(["which", "nmap"], capture_output=True, text=True, timeout=5)
-        version = subprocess.run(["nmap", "--version"], capture_output=True, text=True, timeout=5)
-        test = subprocess.run(
-            ["nmap", "-sT", "-Pn", "-F", "45.33.32.156"],
-            capture_output=True, text=True, timeout=30
-        )
-        return {
-            "which": which.stdout.strip(),
-            "version": version.stdout.strip()[:500],
-            "user": subprocess.run(["id"], capture_output=True, text=True, timeout=5).stdout.strip(),
-            "test_stdout": test.stdout[:2000],
-            "test_stderr": test.stderr[:2000],
-        }
-    except subprocess.TimeoutExpired:
-        return {"error": "nmap timed out (30s)"}
-    except Exception as e:
-        return {"error": str(e)}
+    return {"message": "debug endpoint placeholder"}
+
