@@ -193,12 +193,18 @@ async def debug():
     try:
         which = subprocess.run(["which", "nmap"], capture_output=True, text=True, timeout=5)
         version = subprocess.run(["nmap", "--version"], capture_output=True, text=True, timeout=5)
+        test = subprocess.run(
+            ["nmap", "-sT", "-Pn", "-F", "45.33.32.156"],
+            capture_output=True, text=True, timeout=30
+        )
         return {
             "which": which.stdout.strip(),
-            "which_stderr": which.stderr.strip(),
             "version": version.stdout.strip()[:500],
-            "version_stderr": version.stderr.strip()[:500],
             "user": subprocess.run(["id"], capture_output=True, text=True, timeout=5).stdout.strip(),
+            "test_stdout": test.stdout[:2000],
+            "test_stderr": test.stderr[:2000],
         }
+    except subprocess.TimeoutExpired:
+        return {"error": "nmap timed out (30s)"}
     except Exception as e:
         return {"error": str(e)}
