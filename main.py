@@ -28,7 +28,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS config to allow the specified frontend(s)
-FRONTEND_URLS = os.environ.get("FRONTEND_URLS", "http://localhost:3000,https://www.anmolhatua.store,https://anmolhatua.store")
+FRONTEND_URLS = os.environ.get("FRONTEND_URLS", "http://localhost:3000,https://www.anmolhatua.store,https://anmolhatua.store,https://netauditai.anmolhatua.store")
 ALLOWED_ORIGINS = [url.strip() for url in FRONTEND_URLS.split(",") if url.strip()]
 app.add_middleware(
     CORSMiddleware,
