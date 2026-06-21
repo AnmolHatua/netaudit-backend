@@ -30,6 +30,10 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # CORS config to allow the specified frontend(s)
 FRONTEND_URLS = os.environ.get("FRONTEND_URLS", "http://localhost:3000,https://www.anmolhatua.store,https://anmolhatua.store,https://netauditai.anmolhatua.store")
 ALLOWED_ORIGINS = [url.strip() for url in FRONTEND_URLS.split(",") if url.strip()]
+# Always include the production subdomain even if env var omits it
+NEW_DOMAIN = "https://netauditai.anmolhatua.store"
+if NEW_DOMAIN not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append(NEW_DOMAIN)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
